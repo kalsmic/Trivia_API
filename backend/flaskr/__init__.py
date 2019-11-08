@@ -127,7 +127,7 @@ def create_app(test_config=None):
       "success": True,
       "question": question.format()
     }), 200
-    
+
   '''
   @TODO: 
   Create a POST endpoint to get questions based on a search term. 
@@ -138,6 +138,23 @@ def create_app(test_config=None):
   only question that include that string within their question. 
   Try using the word "title" to start. 
   '''
+  @app.route('/questions/search', methods=['POST'])
+  def search_question():
+    data = request.get_json()
+    search_term = data.get('searchTerm')
+    search_results = Question.query.filter(Question.question.ilike(f'%{search_term}%')).all()
+    questions = paginate_questions(request, search_results)
+    num_of_questions = len(questions)
+
+    if num_of_questions == 0:
+      abort(404)
+
+    return jsonify({
+      "success": True,
+      "questions": questions,
+      "total_questions": num_of_questions,
+      "current_category": None
+    }), 200
 
   '''
   @TODO: 
