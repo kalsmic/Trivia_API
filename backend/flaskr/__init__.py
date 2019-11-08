@@ -45,7 +45,7 @@ def create_app(test_config=None):
   '''
   @app.route('/categories', methods=['GET'])
   def get_categories():
-    categories = [category.format() for category in Category.query.all()]
+    categories = [category.type for category in Category.query.all()]
 
     return jsonify({
       "success": True,
@@ -68,6 +68,7 @@ def create_app(test_config=None):
   def get_questions():
     selection = Question.query.all()
     current_questions = paginate_questions(request, selection)
+    categories = [category.type for category in Category.query.all()]
 
     if len(current_questions) == 0:
       abort(404)
@@ -76,6 +77,8 @@ def create_app(test_config=None):
       "success": True,
       "questions": current_questions,
       "total_questions": len(selection),
+      "categories": categories,
+      "current_category": None
       }), 200
 
   '''
@@ -164,6 +167,21 @@ def create_app(test_config=None):
   categories in the left column will cause only questions of that 
   category to be shown. 
   '''
+  @app.route('/categories/<int:category_id>/questions', methods=['GET'])
+  def get_questions_by_category(category_id):
+    selection = Question.query.filter_by(category=category_id).all()
+    questions = paginate_questions(request, selection)
+    num_of_questions = len(questions)
+
+    if num_of_questions == 0:
+      abort(404)
+
+    return jsonify({
+      "success": True,
+      "questions": questions,
+      "total_questions": num_of_questions,
+      "current_category": category_id
+    }), 200
 
 
   '''
