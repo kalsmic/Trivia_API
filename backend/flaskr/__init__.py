@@ -68,7 +68,7 @@ def create_app(test_config=None):
   def get_questions():
     selection = Question.query.all()
     current_questions = paginate_questions(request, selection)
-    categories = [category.type for category in Category.query.all()]
+    categories = {category.id:category.type for category in Category.query.all()}
 
     if len(current_questions) == 0:
       abort(404)
@@ -115,12 +115,20 @@ def create_app(test_config=None):
   @app.route('/questions', methods=['POST'])
   def create_question():
     data = request.get_json()
+    question = data.get('question'),
+    answer = data.get('answer'),
+    category = data.get('category'),
+    difficulty = data.get('difficulty')
+
+    if not(question or answer or category or difficulty):
+      abort(400)
+
     try:
       question = Question(
-        question = data.get('question'),
-        answer = data.get('answer'),
-        category = data.get('category'),
-        difficulty = data.get('difficulty')
+        question = question,
+        answer = answer,
+        category = category,
+        difficulty = difficulty
       )
       question.insert()
     except:
