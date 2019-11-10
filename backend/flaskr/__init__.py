@@ -195,7 +195,27 @@ def create_app(test_config=None):
   one question at a time is displayed, the user is allowed to answer
   and shown whether they were correct or not. 
   '''
+  @app.route('/quizzes', methods=['POST'])
+  def get_quizzes():
+    data = request.get_json()
+    previous_questions = data.get('previous_questions')
+    quiz_category = data.get('quiz_category')
+    quiz_category_id = int(quiz_category['id'])
 
+    question = Question.query.filter(Question.id.notin_(previous_questions))
+  
+    # quiz category id is 0 if all is selected and therefore false
+    if quiz_category_id:
+      question = question.filter_by(category=quiz_category_id)
+
+    # limit result to only one question
+    question = question.first().format()
+
+    return jsonify({
+      'success': True,
+      'question':question,
+    }), 200
+    
   '''
   @TODO: 
   Create error handlers for all expected errors 
@@ -206,7 +226,7 @@ def create_app(test_config=None):
     return jsonify({
       "success": False,
       "error": 400,
-      "message": "Bad Reqeust"
+      "message": "Bad Request"
     }), 400
 
   @app.errorhandler(404)
