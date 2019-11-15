@@ -72,23 +72,148 @@ This README is missing documentation of your endpoints. Below is an example for 
 
 Endpoints
 GET '/categories'
-GET ...
-POST ...
-DELETE ...
+GET '/questions'
+POST '/questions'
+DELETE '/questions'
+POST 'questions/search'
+GET '/categories/<ind: category_id>/questions'
+POST '/quizzes'
 
 GET '/categories'
 - Fetches a dictionary of categories in which the keys are the ids and the value is the corresponding string of the category
 - Request Arguments: None
 - Returns: An object with a single key, categories, that contains a object of id: category_string key:value pairs. 
-{'1' : "Science",
+{"1":Science",
 '2' : "Art",
 '3' : "Geography",
 '4' : "History",
 '5' : "Entertainment",
 '6' : "Sports"}
 
-```
 
+GET '/questions'
+- Fetches a list of paginated questions, and the total number of questions
+- Request Arguments: page, set to one by default
+- Returns: A list of questions and the total number of questions. 
+{
+    "questions":[
+        {
+          "answer": "Maya Angelou", 
+          "category": 4, 
+          "difficulty": 2, 
+          "id": 5, 
+          "question": "Whose autobiography is entitled 'I Know Why the Caged Bird Sings'?"
+        },{...},
+    ],
+    "total_questions": 20
+}
+- Returns 404 on error, when no questions are available or invalid page param is provided
+{
+  "error": 404, 
+  "message": "Not Found", 
+  "success": false
+}
+
+POST '/questions'
+- Creates a new questiion
+- Request Body: question to be created
+{
+      "answer": "Maya Angelou", 
+      "category": 4, 
+      "difficulty": 2, 
+      "question": "Whose automiography is entitled 'I Know Why the Caged Bird Sings'?"
+     
+}
+
+- Returns: The newly created question. 
+
+{
+  "question": {
+    "answer": "Maya Angelou",
+    "category": 4,
+    "difficulty": 2,
+    "id": 26,
+    "question": "Whose automiography is entitled 'I Know Why the Caged Bird Sings'?"
+  },
+  "success": true
+}
+
+- Returns 400 on error, when bad format data is provided
+{
+  "error": 400, 
+  "message": "Bad Request", 
+  "success": false
+}
+
+DELETE '/questions/<int:question_id>'
+- Delete a question with specified id
+- Request Arguments: question_id, the id of the question to delete
+- Returns success message on success
+{
+  "message": "Question deleted successfully",
+  "success": true
+}
+- Returns 404 on error
+{
+  "error": 404,
+  "message": "Not Found",
+  "success": false
+}
+
+POST '/questions/search'
+- Search a question
+- Request Body: searchTerm
+{"searchTerm": "search term"}
+- Returns success message on success
+{
+    "questions": [{...question}],
+    "total_questions": "number_of_results",
+    "success": true
+}
+- Returns 404 on error
+{
+  "error": 404,
+  "message": "Not Found",
+  "success": false
+}
+
+GET '/categories/<ind: category_id>/questions'
+- Get questions of specified category id
+- Returns a list of questions od the specified category
+ {
+    "questions": [{...question}, {...}],
+    "total_questions": num_of_questions,
+    "current_category": category_id,
+}
+- Returns 404 on error
+{
+  "error": 404,
+  "message": "Not Found",
+  "success": false
+}
+
+POST '/quizzes'
+ - Fetches a question to play quiz
+ - Request Body: 
+    - previous_questions constains a list of ids for previously attempted questions
+    - quiz_category contains the id of the question category for the quiz
+    {
+        "previous_questions": [],
+        "quiz_category": {  "id": "1"}
+    }
+- returns question to play quiz
+{
+  "question": {
+    "answer": "The Liver",
+    "category": 1,
+    "difficulty": 4,
+    "id": 20,
+    "question": "What is the heaviest organ in the human body?"
+  },
+  "success": true
+}
+
+```
 
 ## Testing
 To run the tests, run
