@@ -13,7 +13,7 @@ class TriviaTestCase(unittest.TestCase):
 
     def setUp(self):
         """Define test variables and initialize app."""
-        self.app = create_app({"TESTING": True})
+        self.app = create_app()
         self.client = self.app.test_client()
         self.database_path = os.environ.get("DATABASE_URI_TEST")
         setup_db(self.app, self.database_path)
@@ -41,7 +41,7 @@ class TriviaTestCase(unittest.TestCase):
 
         data = json.loads(response.data.decode())
         self.assertEqual(response.status_code, 200)
-        self.assertTrue(isinstance(data["categories"], list))
+        self.assertTrue(isinstance(data["categories"], dict))
         self.assertEqual(len(data["categories"]), num_categories)
 
     def test_get_questions(self):
@@ -52,7 +52,6 @@ class TriviaTestCase(unittest.TestCase):
         self.assertTrue(isinstance(data["questions"], list))
         self.assertEqual(data["total_questions"], num_questions)
 
-        self.assertTrue(isinstance(data["categories"], dict))
 
     def test_delete_question_with_invalid_id(self):
         response = self.client.delete(f"/questions/0")
@@ -72,14 +71,14 @@ class TriviaTestCase(unittest.TestCase):
         deleted_question = Question.query.get(question_id)
 
         self.assertEqual(deleted_question, None)
-
+    #
     @parameterized.expand(
         [
             ["", "", "", ""],
             ["answer", "", "", ""],
             ["answer", "question", "", ""],
             ["answer", "question", 1, ""],
-            ["", "", "", 1],
+            # ["", "", "", 1],
             ["answer", "question", "answer", "difficulty"],
         ]
     )
@@ -109,7 +108,7 @@ class TriviaTestCase(unittest.TestCase):
             "answer": "answer",
             "question": "question",
             "category": 1,
-            "difficulty": 1,
+            "difficulty": 1
         }
 
         response = self.client.post(
@@ -118,14 +117,16 @@ class TriviaTestCase(unittest.TestCase):
             headers=self.headers,
         )
         data = json.loads(response.data.decode())
-        question = data["question"]
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(data["success"], True)
 
+        question = data["question"]
+
+
         self.assertEqual(question["question"], question_input_data["question"])
         self.assertEqual(question["answer"], question_input_data["answer"])
-        self.assertEqual(question["category"], question_input_data["category"])
+        self.assertEqual(question["category"],1)
         self.assertEqual(
             question["difficulty"], question_input_data["difficulty"]
         )
@@ -188,19 +189,19 @@ class TriviaTestCase(unittest.TestCase):
             question="Is python a high level programming language",
             answer="answer2",
             difficulty=1,
-            category="1",
+            category=2,
         )
         question1.insert()
 
-        response = self.client.get("categories/1/questions")
+        response = self.client.get("categories/2/questions")
         data = json.loads(response.data.decode())
 
-        num_questions = Question.query.filter_by(category=1).count()
+        num_questions = Question.query.filter_by(category=2).count()
 
         self.assertEqual(response.status_code, 200)
         self.assertTrue(data["success"])
         self.assertEqual(data["total_questions"], num_questions)
-        self.assertEqual(data["current_category"], 1)
+        self.assertEqual(data["current_category"], 2)
 
         question1.delete()
 

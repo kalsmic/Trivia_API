@@ -18,7 +18,9 @@ class QuestionView extends Component {
   }
 
   componentDidMount() {
+    this.getCategories();
     this.getQuestions();
+
   }
 
   getQuestions = () => {
@@ -28,13 +30,26 @@ class QuestionView extends Component {
       success: (result) => {
         this.setState({
           questions: result.questions,
-          totalQuestions: result.total_questions,
-          categories: result.categories,
-          currentCategory: result.current_category })
+          totalQuestions: result.total_questions });
         return;
       },
       error: (error) => {
         alert('Unable to load questions. Please try your request again')
+        return;
+      }
+    })
+  }
+  getCategories = () => {
+    $.ajax({
+      url: `/categories`,
+      type: "GET",
+      success: (result) => {
+        this.setState({
+          categories: result.categories});
+        return;
+      },
+      error: (error) => {
+        alert('Unable to load categories. Please try your request again');
         return;
       }
     })
@@ -128,7 +143,7 @@ class QuestionView extends Component {
             {Object.keys(this.state.categories).map((id, ) => (
               <li key={id} onClick={() => {this.getByCategory(id)}}>
                 {this.state.categories[id]}
-                <img className="category" src={`${this.state.categories[id]}.svg`}/>
+                <img className="category" src={`${this.state.categories[id]}.svg`.toLowerCase()}/>
               </li>
             ))}
           </ul>

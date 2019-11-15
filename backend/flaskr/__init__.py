@@ -51,7 +51,7 @@ def create_app(test_config=None):
 
     @app.route("/categories", methods=["GET"])
     def get_categories():
-        categories = [category.type for category in Category.query.all()]
+        categories = {category.id: category.type for category in Category.query.all()}
 
         return jsonify({"success": True, "categories": categories}), 200
 
@@ -72,9 +72,6 @@ def create_app(test_config=None):
     def get_questions():
         selection = Question.query.all()
         current_questions = paginate_questions(request, selection)
-        categories = {
-            category.id: category.type for category in Category.query.all()
-        }
 
         if len(current_questions) == 0:
             abort(404)
@@ -84,9 +81,7 @@ def create_app(test_config=None):
                 {
                     "success": True,
                     "questions": current_questions,
-                    "total_questions": len(selection),
-                    "categories": categories,
-                    "current_category": None,
+                    "total_questions": len(selection)
                 }
             ),
             200,
@@ -134,7 +129,7 @@ def create_app(test_config=None):
         category = (data.get("category"),)
         difficulty = data.get("difficulty")
 
-        if not (question or answer or category or difficulty):
+        if not(question and answer and category and difficulty):
             abort(400)
 
         try:
@@ -199,7 +194,7 @@ def create_app(test_config=None):
     def get_questions_by_category(category_id):
         selection = Question.query.filter_by(category=category_id).all()
         questions = paginate_questions(request, selection)
-        num_of_questions = len(questions)
+        num_of_questions = len(selection)
 
         if num_of_questions == 0:
             abort(404)
