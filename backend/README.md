@@ -78,8 +78,10 @@ DELETE '/questions'
 POST 'questions/search'
 GET '/categories/<ind: category_id>/questions'
 POST '/quizzes'
+```
 
-GET '/categories'
+##### GET '/categories'
+```
 - Fetches a dictionary of categories in which the keys are the ids and the value is the corresponding string of the category
 - Request Arguments: None
 - Returns: An object with a single key, categories, that contains a object of id: category_string key:value pairs. 
@@ -89,9 +91,10 @@ GET '/categories'
 '4' : "History",
 '5' : "Entertainment",
 '6' : "Sports"}
+```
 
-
-GET '/questions'
+##### GET '/questions'
+```
 - Fetches a list of paginated questions, and the total number of questions
 - Request Arguments: page, set to one by default
 - Returns: A list of questions and the total number of questions. 
@@ -113,8 +116,11 @@ GET '/questions'
   "message": "Not Found", 
   "success": false
 }
+```
 
-POST '/questions'
+
+##### POST '/questions'
+```
 - Creates a new questiion
 - Request Body: question to be created
 {
@@ -144,8 +150,10 @@ POST '/questions'
   "message": "Bad Request", 
   "success": false
 }
+```
 
-DELETE '/questions/<int:question_id>'
+##### DELETE '/questions/<int:question_id>'
+```
 - Delete a question with specified id
 - Request Arguments: question_id, the id of the question to delete
 - Returns success message on success
@@ -159,8 +167,10 @@ DELETE '/questions/<int:question_id>'
   "message": "Not Found",
   "success": false
 }
+```
 
-POST '/questions/search'
+##### POST '/questions/search'
+```
 - Search a question
 - Request Body: searchTerm
 {"searchTerm": "search term"}
@@ -176,8 +186,10 @@ POST '/questions/search'
   "message": "Not Found",
   "success": false
 }
+```
 
-GET '/categories/<ind: category_id>/questions'
+##### GET '/categories/<ind: category_id>/questions'
+```
 - Get questions of specified category id
 - Returns a list of questions od the specified category
  {
@@ -191,8 +203,10 @@ GET '/categories/<ind: category_id>/questions'
   "message": "Not Found",
   "success": false
 }
+```
 
-POST '/quizzes'
+##### POST '/quizzes'
+```
  - Fetches a question to play quiz
  - Request Body: 
     - previous_questions constains a list of ids for previously attempted questions
