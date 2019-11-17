@@ -1,0 +1,28 @@
+ 
+language: python
+
+python:
+  - "3.6.6"
+
+services:
+  - postgresql
+
+before_script:
+  - psql -c 'create database trivia_test;' -U postgres
+  - psql trivia_test < trivia.psql
+  - echo $DATABASE_URL_TEST
+
+install:
+  - pip install -r requirements.txt
+  - pip install pytest
+  - pip install coverage
+  - pip install coveralls
+  - pip install pytest-cov
+
+
+script:
+
+  - python -m pytest test_flaskr.py --cov=flaskr
+
+after_success:
+  - coveralls

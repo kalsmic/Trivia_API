@@ -15,7 +15,7 @@ class TriviaTestCase(unittest.TestCase):
         """Define test variables and initialize app."""
         self.app = create_app()
         self.client = self.app.test_client()
-        self.database_path = os.environ.get("DATABASE_URI_TEST")
+        self.database_path = os.environ.get("DATABASE_URI")
         setup_db(self.app, self.database_path)
 
         self.headers = {
