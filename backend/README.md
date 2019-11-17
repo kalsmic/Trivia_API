@@ -1,5 +1,6 @@
 [![Build Status](https://travis-ci.org/kalsmic/Trivia_API.svg?branch=master)](https://travis-ci.org/kalsmic/Trivia_API)
 [![Coverage Status](https://coveralls.io/repos/github/kalsmic/Trivia_API/badge.svg?branch=master)](https://coveralls.io/github/kalsmic/Trivia_API?branch=master)
+[![Maintainability](https://api.codeclimate.com/v1/badges/1e16c59df878480a6206/maintainability)](https://codeclimate.com/github/kalsmic/Trivia_API/maintainability)
 
 # Full Stack Trivia API Backend
 
