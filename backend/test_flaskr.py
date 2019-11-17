@@ -43,6 +43,15 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTrue(isinstance(data["categories"], dict))
         self.assertEqual(len(data["categories"]), num_categories)
+   
+    def test_404_on_empty_results(self):
+        response = self.client.get("/questions?page=100")
+
+        data = json.loads(response.data.decode())
+
+        self.assertEqual(response.status_code, 404)
+        self.assertFalse(data["success"])
+        self.assertEqual(data["message"], "Not Found")
 
     def test_get_questions(self):
         num_questions = Question.query.count()
@@ -56,8 +65,8 @@ class TriviaTestCase(unittest.TestCase):
         response = self.client.delete(f"/questions/0")
         data = json.loads(response.data.decode())
 
-        self.assertEqual(response.status_code, 404)
-        self.assertEqual(data["message"], "Not Found")
+        self.assertEqual(response.status_code, 422)
+        self.assertEqual(data["message"], "Unprocessible Entity")
 
     def test_delete_question(self):
         question_id = Question.query.first().id
@@ -242,6 +251,26 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(question["category"], 1)
 
         question1.delete()
+
+    def test_405_return_on_method_not_allowed(self):
+        response = self.client.patch("/questions")
+        data = json.loads(response.data.decode())
+
+        self.assertEqual(response.status_code, 405)
+        self.assertFalse(data["success"])
+        self.assertEqual(data["message"], "Method Not Allowed")
+    
+    def test_500_return_on_internal_server_error(self):
+        response = self.client.post(
+            f"/questions",
+            data=json.dumps(''),
+            headers=self.headers,
+        )
+        data = json.loads(response.data.decode())
+
+        self.assertEqual(response.status_code, 500)
+        self.assertFalse(data["success"])
+        self.assertEqual(data["message"], "Internal Server Error")
 
 
 # Make the tests conveniently executable
