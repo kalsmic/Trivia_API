@@ -43,7 +43,7 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTrue(isinstance(data["categories"], dict))
         self.assertEqual(len(data["categories"]), num_categories)
-   
+
     def test_404_on_empty_results(self):
         response = self.client.get("/questions?page=100")
 
@@ -259,7 +259,7 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(response.status_code, 405)
         self.assertFalse(data["success"])
         self.assertEqual(data["message"], "Method Not Allowed")
-    
+
     def test_500_return_on_internal_server_error(self):
         response = self.client.post(
             f"/questions",
