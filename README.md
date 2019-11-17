@@ -32,6 +32,9 @@ We recommend following the instructions in those files in order. This order will
 We started the full stack application for you. It is desiged with some key functional areas:
 
 ### Backend
+[![Build Status](https://travis-ci.org/kalsmic/Trivia_API.svg?branch=master)](https://travis-ci.org/kalsmic/Trivia_API)
+[![Coverage Status](https://coveralls.io/repos/github/kalsmic/Trivia_API/badge.svg?branch=master)](https://coveralls.io/github/kalsmic/Trivia_API?branch=master)
+[![Maintainability](https://api.codeclimate.com/v1/badges/1e16c59df878480a6206/maintainability)](https://codeclimate.com/github/kalsmic/Trivia_API/maintainability)
 
 The `./backend` directory contains a partially completed Flask and SQLAlchemy server. You will work primarily in app.py to define your endpoints and can reference models.py for DB and SQLAlchemy setup. 
 
