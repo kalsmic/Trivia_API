@@ -1,3 +1,7 @@
+[![Build Status](https://travis-ci.org/kalsmic/Trivia_API.svg?branch=master)](https://travis-ci.org/kalsmic/Trivia_API)
+
+[![Coverage Status](https://coveralls.io/repos/github/kalsmic/Trivia_API/badge.svg?branch=master)](https://coveralls.io/github/kalsmic/Trivia_API?branch=master)
+
 # Full Stack Trivia API Backend
 
 ## Getting Started
