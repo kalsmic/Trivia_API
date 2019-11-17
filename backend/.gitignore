@@ -1,0 +1,8 @@
+venv/
+.env
+.env_test
+*/**/__pychache__
+
+# ignore code editor folders
+.idea/
+.vscode/

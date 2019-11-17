@@ -52,7 +52,6 @@ class TriviaTestCase(unittest.TestCase):
         self.assertTrue(isinstance(data["questions"], list))
         self.assertEqual(data["total_questions"], num_questions)
 
-
     def test_delete_question_with_invalid_id(self):
         response = self.client.delete(f"/questions/0")
         data = json.loads(response.data.decode())
@@ -71,6 +70,7 @@ class TriviaTestCase(unittest.TestCase):
         deleted_question = Question.query.get(question_id)
 
         self.assertEqual(deleted_question, None)
+
     #
     @parameterized.expand(
         [
@@ -108,7 +108,7 @@ class TriviaTestCase(unittest.TestCase):
             "answer": "answer",
             "question": "question",
             "category": 1,
-            "difficulty": 1
+            "difficulty": 1,
         }
 
         response = self.client.post(
@@ -123,10 +123,9 @@ class TriviaTestCase(unittest.TestCase):
 
         question = data["question"]
 
-
         self.assertEqual(question["question"], question_input_data["question"])
         self.assertEqual(question["answer"], question_input_data["answer"])
-        self.assertEqual(question["category"],1)
+        self.assertEqual(question["category"], 1)
         self.assertEqual(
             question["difficulty"], question_input_data["difficulty"]
         )
@@ -146,13 +145,16 @@ class TriviaTestCase(unittest.TestCase):
 
     def test_search_question(self):
         question1 = Question(
-            question="True or False: Django is a high-level Python Web framework that encourages rapid development and clean, pragmatic design",
+            question="True or False: Django is a high-level Python Web"
+                     " framework that encourages rapid development"
+                     " and clean, pragmatic design",
             answer="True",
             difficulty=1,
             category=1,
         )
         question2 = Question(
-            question="True or False: django is a micro web framework written in Python",
+            question="True or False: django is a micro web framework "
+                     "written in Python",
             answer="False",
             difficulty=1,
             category=2,
