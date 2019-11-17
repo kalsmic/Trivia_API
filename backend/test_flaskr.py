@@ -15,7 +15,7 @@ class TriviaTestCase(unittest.TestCase):
         """Define test variables and initialize app."""
         self.app = create_app()
         self.client = self.app.test_client()
-        self.database_path = os.environ.get("DATABASE_URI_TEST")
+        self.database_path = os.environ.get("DATABASE_URI")
         setup_db(self.app, self.database_path)
 
         self.headers = {
@@ -43,6 +43,15 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTrue(isinstance(data["categories"], dict))
         self.assertEqual(len(data["categories"]), num_categories)
+   
+    def test_404_on_empty_results(self):
+        response = self.client.get("/questions?page=100")
+
+        data = json.loads(response.data.decode())
+
+        self.assertEqual(response.status_code, 404)
+        self.assertFalse(data["success"])
+        self.assertEqual(data["message"], "Not Found")
 
     def test_get_questions(self):
         num_questions = Question.query.count()
@@ -52,13 +61,12 @@ class TriviaTestCase(unittest.TestCase):
         self.assertTrue(isinstance(data["questions"], list))
         self.assertEqual(data["total_questions"], num_questions)
 
-
     def test_delete_question_with_invalid_id(self):
         response = self.client.delete(f"/questions/0")
         data = json.loads(response.data.decode())
 
-        self.assertEqual(response.status_code, 404)
-        self.assertEqual(data["message"], "Not Found")
+        self.assertEqual(response.status_code, 422)
+        self.assertEqual(data["message"], "Unprocessible Entity")
 
     def test_delete_question(self):
         question_id = Question.query.first().id
@@ -71,6 +79,7 @@ class TriviaTestCase(unittest.TestCase):
         deleted_question = Question.query.get(question_id)
 
         self.assertEqual(deleted_question, None)
+
     #
     @parameterized.expand(
         [
@@ -108,7 +117,7 @@ class TriviaTestCase(unittest.TestCase):
             "answer": "answer",
             "question": "question",
             "category": 1,
-            "difficulty": 1
+            "difficulty": 1,
         }
 
         response = self.client.post(
@@ -123,10 +132,9 @@ class TriviaTestCase(unittest.TestCase):
 
         question = data["question"]
 
-
         self.assertEqual(question["question"], question_input_data["question"])
         self.assertEqual(question["answer"], question_input_data["answer"])
-        self.assertEqual(question["category"],1)
+        self.assertEqual(question["category"], 1)
         self.assertEqual(
             question["difficulty"], question_input_data["difficulty"]
         )
@@ -146,13 +154,16 @@ class TriviaTestCase(unittest.TestCase):
 
     def test_search_question(self):
         question1 = Question(
-            question="True or False: Django is a high-level Python Web framework that encourages rapid development and clean, pragmatic design",
+            question="True or False: Django is a high-level Python Web"
+                     " framework that encourages rapid development"
+                     " and clean, pragmatic design",
             answer="True",
             difficulty=1,
             category=1,
         )
         question2 = Question(
-            question="True or False: django is a micro web framework written in Python",
+            question="True or False: django is a micro web framework "
+                     "written in Python",
             answer="False",
             difficulty=1,
             category=2,
@@ -240,6 +251,26 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(question["category"], 1)
 
         question1.delete()
+
+    def test_405_return_on_method_not_allowed(self):
+        response = self.client.patch("/questions")
+        data = json.loads(response.data.decode())
+
+        self.assertEqual(response.status_code, 405)
+        self.assertFalse(data["success"])
+        self.assertEqual(data["message"], "Method Not Allowed")
+    
+    def test_500_return_on_internal_server_error(self):
+        response = self.client.post(
+            f"/questions",
+            data=json.dumps(''),
+            headers=self.headers,
+        )
+        data = json.loads(response.data.decode())
+
+        self.assertEqual(response.status_code, 500)
+        self.assertFalse(data["success"])
+        self.assertEqual(data["message"], "Internal Server Error")
 
 
 # Make the tests conveniently executable
