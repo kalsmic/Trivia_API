@@ -105,7 +105,7 @@ def create_app(test_config=None):
             question = Question.query.get_or_404(question_id)
             question.delete()
         except BaseException:
-            abort(404)
+            abort(422)
 
         return (
             jsonify(
